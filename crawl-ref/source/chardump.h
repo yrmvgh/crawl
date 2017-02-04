@@ -17,9 +17,14 @@ enum item_origin_dump_selector
     IODS_EGO_WEAPON       = 4,
     IODS_JEWELLERY        = 8,
     IODS_RUNES            = 16,
-    IODS_RODS             = 32,
+#if TAG_MAJOR_VERSION == 34
+                          //32,
     IODS_STAVES           = 64,
     IODS_BOOKS            = 128,
+#else
+    IODS_STAVES           = 32,
+    IODS_BOOKS            = 64,
+#endif
     IODS_EVERYTHING       = 0xFF,
 };
 
@@ -43,7 +48,9 @@ void record_turn_timestamp();
 enum evoc_type
 {
     EVOC_WAND,
+#if TAG_MAJOR_VERSION == 34
     EVOC_ROD,
+#endif
     EVOC_DECK,
 #if TAG_MAJOR_VERSION == 34
     EVOC_MISC,
@@ -68,5 +75,6 @@ enum block_type    // auxtype for counted actions
 void count_action(caction_type type, int subtype = -32768,
                   int auxtype = -32768);
 pair<int, int> caction_extract_types(int compound_subtype);
+int caction_compound(int subtype = -32768, int auxtype = -32768);
 
 #endif

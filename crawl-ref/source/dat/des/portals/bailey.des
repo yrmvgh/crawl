@@ -5,7 +5,7 @@
 # A small portal vault fixated on nasty weapons. (Axes and polearms by now.)
 # Castle like layout, with inner bailey and moat. Medieval warfare themed.
 #
-# Currently, the depth is fixed at D:7-16 and Orc. It would be nice if the
+# Currently, the depth is fixed at D:7-14 and Orc. It would be nice if the
 # portal vault could also appear deeper, with a harder monster set. For
 # example, draconians would be an option.
 #
@@ -720,8 +720,8 @@ NSUBST: E = 1:+ / *:c
 SUBST:  2 = 223.
 SUBST:  1 = 1 2:1 .
 ITEM:   good_item crystal plate armour / good_item plate armour /\
-        good_item gold dragon armour w:5 / good_item ice dragon armour w:5 /\
-        good_item fire dragon armour w:5 / good_item steam dragon armour w:5
+        good_item gold dragon scales w:5 / good_item ice dragon scales w:5 /\
+        good_item fire dragon scales w:5 / good_item steam dragon scales w:5
 ITEM:   good_item cloak / good_item pair of gloves /\
         good_item helmet / good_item pair of boots /\
         good_item large shield / good_item shield
@@ -779,8 +779,7 @@ KFEAT:  C = altar_beogh
 ITEM:   manual of armour / manual of fighting / manual of shields /\
         good_item bardiche / good_item executioner's axe
 ITEM:   potion of experience q:1 / scroll of acquirement q:1 /\
-        scroll of enchant armour q:2 / scroll of enchant weapon q:3 /\
-        legendary deck of wonders ident:type
+        scroll of enchant armour q:2 / scroll of enchant weapon q:3
 NSUBST: d = 1:e / *:d|
 : bailey_setup(_G)
 MAP
@@ -967,8 +966,7 @@ SUBST:  / = 12
 KITEM:  d = manual of armour / manual of fighting / manual of shields /\
             good_item bardiche / good_item executioner's axe
 KITEM:  e = potion of experience q:1 / scroll of acquirement q:1 /\
-            scroll of enchant armour q:2 / scroll of enchant weapon q:3 /\
-            legendary deck of wonders ident:type
+            scroll of enchant armour q:2 / scroll of enchant weapon q:3
 NSUBST: d = 1:e / *:d|
 : bailey_setup(_G)
 MAP
