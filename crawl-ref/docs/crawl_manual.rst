@@ -1597,14 +1597,6 @@ Deep Dwarves
   the magic of earth and death, eventually gaining some resistance to the dark
   powers of necromancy.
 
-Deep Elves
-   This is an Elven species who long ago fled the overworld to live in darkness
-   underground. There, they developed their mental powers, evolving a natural
-   gift for all forms of magic (including necromancy and earth magic), and
-   adapted physically to their new environment, becoming shorter, weaker, and
-   losing all colouration. They are poor at hand-to-hand combat, but excellent
-   at fighting from a distance.
-
 Felids
   Felids are a breed of cats that have been granted sentience. Originally they
   were witches' familiars that were magically augmented to provide help for
@@ -1623,6 +1615,46 @@ Felids
 
   Felids gain extra lives as they increase in levels. Upon death, they will be
   resurrected in a safe place, losing an experience level in the process.
+
+
+Elves
+========================================
+
+There are a number of distinct species of Elf. Elves are all physically slight
+but long-lived people, quicker-witted than Humans, but sometimes slower to learn
+new things. Elves are especially good at using those skills which require a
+degree of finesse, such as stealth, sword-fighting and archery, but tend to be
+poor at using brute force and inelegant forms of combat. They find heavy armour
+to be uncomfortable.
+
+Due to their fey natures, all Elves are good at using magic in general and
+elemental magic in particular, while their affinity for other types of magic
+varies among the different sub-species.
+
+High Elves
+  This is a tall and powerful Elven species who advance in levels slowly,
+  requiring half again as much experience as Humans. They have good intelligence
+  and dexterity, but suffer in strength. Compared with Humans, they have fewer
+  HP but more magic. Among all races, they are best with blades and bows. They
+  are not very good with necromancy or with earth or poison magic, but are
+  highly skilled with most other forms of magic, especially Air and Charms.
+
+Deep Elves
+  This is an Elven species who long ago fled the overworld to live in darkness
+  underground. There, they developed their mental powers, evolving a natural
+  gift for all forms of magic (including necromancy and earth magic), and
+  adapted physically to their new environment, becoming shorter and weaker than
+  High Elves and losing all colouration. They are poor at hand-to-hand combat,
+  but excellent at fighting from a distance. They advance in levels at the same
+  speed as High Elves.
+
+Sludge Elves
+  This is a somewhat unfortunate species of Elves. A mad priest of Beogh spent
+  years trying to transmute a species with the strength of orcs and the grace of
+  of High Elves. Sludge Elves are the result. Their shifting, mutated bodies are 
+  both a blessing and a curse, resulting in natural necromantic, poisonous and
+  and transmutative talents. As fighters, they are often most dangerous unarmed.
+  They advance in levels slower than Humans, but faster than other Elves.
 
 Barachians
   Barachians are an amphibious humanoid race, said to be distantly related to

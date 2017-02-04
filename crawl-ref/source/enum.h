@@ -4219,13 +4219,9 @@ enum skill_focus_mode
 enum species_type
 {
     SP_HUMAN,
-#if TAG_MAJOR_VERSION == 34
     SP_HIGH_ELF,
-#endif
     SP_DEEP_ELF,
-#if TAG_MAJOR_VERSION == 34
     SP_SLUDGE_ELF,
-#endif
     SP_HALFLING,
     SP_HILL_ORC,
     SP_KOBOLD,
