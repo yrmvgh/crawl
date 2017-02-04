@@ -433,8 +433,8 @@ static const map<species_type, species_def> species_data =
     7, 11, 10, // 28
     { STAT_INT, STAT_DEX }, 3,
     {},
-    {},
-    {},
+    { "You are unusually perceptive of traps and noises." },
+    { "keen senses" },
     { JOB_HUNTER, JOB_SKALD, JOB_WIZARD, JOB_CONJURER, JOB_FIRE_ELEMENTALIST,
       JOB_ICE_ELEMENTALIST, JOB_AIR_ELEMENTALIST },
     { SK_SHORT_BLADES, SK_LONG_BLADES, SK_STAVES, SK_BOWS },
@@ -611,13 +611,13 @@ static const map<species_type, species_def> species_data =
 { SP_SLUDGE_ELF, {
     "SE",
     "Sludge Elf", "Elven", "Elf",
-    SPF_ELVEN,
-    0, -1, 1, 3,
+    SPF_ORCISH,
+    -1, 0, 1, 3,
     MONS_ELF,
     HT_LAND, US_ALIVE, SIZE_MEDIUM,
-    8, 8, 8, // 24
-    { STAT_INT, STAT_DEX }, 4,
-    {},
+    8, 9, 7, // 24
+    { STAT_STR, STAT_INT }, 4,
+    { { MUT_EVOLUTION, 1, 1 }, { MUT_EVOLUTION, 27, 1 }, },
     {},
     {},
     { JOB_ASSASSIN, JOB_HUNTER, JOB_WIZARD, JOB_TRANSMUTER, JOB_VENOM_MAGE,
