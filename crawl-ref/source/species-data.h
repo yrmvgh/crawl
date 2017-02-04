@@ -615,9 +615,9 @@ static const map<species_type, species_def> species_data =
     -1, 0, 1, 3,
     MONS_ELF,
     HT_LAND, US_ALIVE, SIZE_MEDIUM,
-    8, 9, 7, // 24
-    { STAT_STR, STAT_INT }, 4,
-    { { MUT_EVOLUTION, 1, 1 }, { MUT_EVOLUTION, 27, 1 }, },
+    9, 8, 7, // 24
+    { STAT_STR, STAT_DEX }, 4,
+    { { MUT_EVOLUTION, 1, 1 }, { MUT_EVOLUTION, 1, 24 }, },
     {},
     {},
     { JOB_ASSASSIN, JOB_HUNTER, JOB_WIZARD, JOB_TRANSMUTER, JOB_VENOM_MAGE,
