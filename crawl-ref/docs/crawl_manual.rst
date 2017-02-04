@@ -1647,7 +1647,14 @@ Deep Elves
   High Elves and losing all colouration. They are poor at hand-to-hand combat,
   but excellent at fighting from a distance. They advance in levels at the same
   speed as High Elves.
- 
+
+Sludge Elves
+  This is a somewhat unfortunate species of Elves. A mad priest of Beogh spent
+  years trying to transmute a species with the strength of orcs and the grace of
+  of High Elves. Sludge Elves are the result. Their shifting, mutated bodies are 
+  both a blessing and a curse, resulting in natural necromantic, poisonous and
+  and transmutative talents. As fighters, they are often most dangerous unarmed.
+  They advance in levels slower than Humans, but faster than other Elves.
 
 Barachians
   Barachians are an amphibious humanoid race, said to be distantly related to
