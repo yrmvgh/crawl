@@ -137,6 +137,7 @@ int book_rarity(book_type which_book)
 
     case BOOK_BATTLE:
     case BOOK_DEBILITATION:
+    case BOOK_WAR_WIZARDRY:
         return 5;
 
     case BOOK_CLOUDS:
