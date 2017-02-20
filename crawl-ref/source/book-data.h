@@ -199,7 +199,7 @@ static const vector<spell_type> spellbook_templates[] =
 },
 
 {   // Book of the Warp
-    SPELL_GRAVITAS,
+    SPELL_GRAVITAS, 
     SPELL_FORCE_LANCE,
     SPELL_SUMMON_FOREST,
     SPELL_DISPERSAL,
@@ -368,6 +368,16 @@ static const vector<spell_type> spellbook_templates[] =
     SPELL_DEATHS_DOOR,
     SPELL_INFESTATION,
     SPELL_NECROMUTATION,
+},
+
+{   // Book of War Wizardry
+    SPELL_CONFUSING_TOUCH,
+    SPELL_BEASTLY_APPENDAGE,
+    SPELL_SANDBLAST,
+    SPELL_DAZZLING_SPRAY,
+    SPELL_SONG_OF_SLAYING,
+    SPELL_OZOCUBUS_ARMOUR,
+    SPELL_CALL_CANINE_FAMILIAR,
 },
 
 };
