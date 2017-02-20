@@ -264,7 +264,8 @@ static void _give_wanderer_book(skill_type skill)
         break;
 
     case SK_TRANSMUTATIONS:
-        book = coinflip() ? BOOK_GEOMANCY : BOOK_CHANGES;
+        book = random_choose(BOOK_GEOMANCY,
+                             BOOK_CHANGES, BOOK_CHANGES);
         break;
 
     case SK_FIRE_MAGIC:
@@ -284,11 +285,11 @@ static void _give_wanderer_book(skill_type skill)
         break;
 
     case SK_HEXES:
-        book = BOOK_MALEDICT;
+        book = coinflip() ? BOOK_MALEDICT : BOOK_WAR_WIZARDRY;
         break;
 
     case SK_CHARMS:
-        book = BOOK_BATTLE;
+        book = coinflip() ? BOOK_BATTLE : BOOK_WAR_WIZARDRY;;
         break;
     }
 
