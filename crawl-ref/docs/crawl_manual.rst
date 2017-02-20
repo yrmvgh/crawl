@@ -1584,24 +1584,41 @@ Demonspawn
   and conjurations and much better at necromancy and invocations. Note that
   unlike Demigods, they can take on gods, although not all will accept them.
 
+
+Dwarves
+========================================
+
+There are a few distinct species of Dwarf. Dwarves are stout, short, and long-
+lived. Stronger than Humans, but sometimes slower to learn new things. They are
+skilled with magical devices, and comfortable with a mace and shield in hand.
+
+Surface Dwarves
+  Surface Dwarves, as opposed to the subterranean specimen, come from halls and
+  hills above the Dungeon. They love to fight, and often venture forth to seek
+  fame and fortune through battle. As such, they are very robust and excellent
+  at hand combat. Polearms usually are too big for them to wield comfortably and
+  so make quite bad weapons for Surface Dwarves.
+
+  In general, they are rather more resistant to magic than capable of using it
+  themselves. However, they are very proficient at earth, fire, and skald magic.
+  They advance in levels at a similar rate to Deep Elves.
+
 Deep Dwarves
-  Deep Dwarves are short, hardy people who, unlike their extinct surface
+  Deep Dwarves are short, hardy people who, unlike their foolhardy surface
   relatives, never left the underground homelands. Living there for countless
   generations made them turn pale and lose all ability to regenerate health
   over time, or to have their rate of regeneration hastened by any effects.
   Deep Dwarves can instead draw on their magical essence to heal, but doing so
   will gradually deplete their maximum reserves of magic. They are passively
   able to reduce all incoming damage, and their empathy with the earth allows
-  them to sense their surroundings; these abilities increase in power as they
-  gain experience levels.
+  them to sense their surroundings.
 
   Naturally, Deep Dwarves are quite adept with all arts of avoiding blows and
   damage. Offensively, they are skilled users of axes, crossbows, and slings.
   Deep Dwarves are highly spiritual beings, often portrayed as actual spirits
-  by outsiders; because of this, their skill with invocations is great, and
-  they often rely on divine assistance for healing. They are most at home with
-  the magic of earth and death, eventually gaining some resistance to the dark
-  powers of necromancy.
+  by outsiders, and they often rely on divine assistance for healing. They are
+  most at home with the magic of earth and death, eventually gaining some
+  resistance to the dark powers of necromancy.
 
 Felids
   Felids are a breed of cats that have been granted sentience. Originally they
@@ -1614,10 +1631,9 @@ Felids
   cats, Felids are incapable of thriving on vegetable food, and need meat to
   survive.
 
-  Their agility and stealth are legendary, as is their ability to get to hard to
-  reach places. They move faster than most races, but don't run as fast as
-  Centaurs or Spriggans. Felids advance in levels very slowly. They are skilled
-  with many forms of magic, though less so with raw elemental magic.
+  Their agility and stealth are legendary, They move faster than most races, but
+  not as fast as Centaurs or Spriggans. Felids advance in levels very slowly.
+  They are skilled with many forms of magic, though not with raw elemental magic.
 
   Felids gain extra lives as they increase in levels. Upon death, they will be
   resurrected in a safe place, losing an experience level in the process.
@@ -1628,14 +1644,7 @@ Elves
 
 There are a number of distinct species of Elf. Elves are all physically slight
 but long-lived people, quicker-witted than Humans, but sometimes slower to learn
-new things. Elves are especially good at using those skills which require a
-degree of finesse, such as stealth, sword-fighting and archery, but tend to be
-poor at using brute force and inelegant forms of combat. They find heavy armour
-to be uncomfortable.
-
-Due to their fey natures, all Elves are good at using magic in general and
-elemental magic in particular, while their affinity for other types of magic
-varies among the different sub-species.
+new things.
 
 High Elves
   This is a tall and powerful Elven species who advance in levels slowly,
