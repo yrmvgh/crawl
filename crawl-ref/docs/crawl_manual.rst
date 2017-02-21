@@ -1666,11 +1666,7 @@ Deep Elves
 Sludge Elves
   This is a somewhat unfortunate species of Elves. A mad priest of Beogh spent
   years trying to transmute a species with the strength of orcs and the grace of
-<<<<<<< HEAD
   of High Elves. Sludge Elves are the result. Their shifting, mutated bodies are
-=======
-  of High Elves. Sludge Elves are the result. Their shifting, mutated bodies are 
->>>>>>> Update crawl_manual.rst
   both a blessing and a curse, resulting in natural necromantic, poisonous and
   and transmutative talents. As fighters, they are often most dangerous unarmed.
   They advance in levels slower than Humans, but faster than other Elves.
