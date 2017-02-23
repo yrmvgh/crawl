@@ -464,7 +464,6 @@ static peeve_map divine_peeves[] =
         { DID_KILL_HOLY, GOOD_KILL_HOLY_RESPONSE },
         { DID_DESECRATE_HOLY_REMAINS, GOOD_DESECRATE_HOLY_RESPONSE },
         { DID_EVIL, GOOD_EVIL_RESPONSE },
-        },
     },
 };
 
