@@ -2524,9 +2524,8 @@ static string _god_hates_your_god_reaction(god_type god, god_type your_god)
         if (!is_good_god(god))
             return "";
 
-        // Zin hates chaotic gods.
-	// Hellmonk, should Hep or TSO hate chaos now instead?
-        if (god == GOD_ZIN && is_chaotic_god(your_god))
+        // Tso hates chaotic gods.
+        if (god == GOD_SHINING_ONE && is_chaotic_god(your_god))
             return " for chaos";
 
         if (is_evil_god(your_god))
@@ -3744,8 +3743,7 @@ bool god_hates_your_god(god_type god, god_type your_god)
         return true;
 
     // Zin hates chaotic gods.
-    // Hellmonk: make this TSO or hep?
-    if (god == GOD_ZIN && is_chaotic_god(your_god))
+    if (god == GOD_SHINING_ONE && is_chaotic_god(your_god))
         return true;
 
     return is_evil_god(your_god);
