@@ -373,7 +373,7 @@ bool is_evil_god(god_type god)
 
 bool is_good_god(god_type god)
 {
-    return god == GOD_ZIN
+    return god == GOD_HEPLIAKLQANA
            || god == GOD_SHINING_ONE
            || god == GOD_ELYVILON;
 }
@@ -690,6 +690,7 @@ static void _inc_penance(god_type god, int val)
             notify_stat_change();
         }
 
+	// what the heck is this comment talking about, it's not in trunk
         // Neither does Trog's regeneration or magic resistance.
         if (god == GOD_TROG)
         {
@@ -2524,6 +2525,7 @@ static string _god_hates_your_god_reaction(god_type god, god_type your_god)
             return "";
 
         // Zin hates chaotic gods.
+	// Hellmonk, should Hep or TSO hate chaos now instead?
         if (god == GOD_ZIN && is_chaotic_god(your_god))
             return " for chaos";
 
@@ -2720,11 +2722,6 @@ void excommunication(bool voluntary, god_type new_god)
         if (env.sanctuary_time)
             remove_sanctuary();
 
-        // Leaving Zin for a non-good god will make neutral holies
-        // (originally from TSO) abandon you.
-        if (!is_good_god(new_god))
-            add_daction(DACT_ALLY_HOLY);
-
         _set_penance(old_god, 25);
         break;
 
@@ -2853,6 +2850,12 @@ void excommunication(bool voluntary, god_type new_god)
         you.exp_docked[old_god] = exp_needed(min<int>(you.max_level, 27) + 1)
                                     - exp_needed(min<int>(you.max_level, 27));
         you.exp_docked_total[old_god] = you.exp_docked[old_god];
+
+	// Leaving Hep for a non-good god will make neutral holies
+        // (originally from TSO) abandon you.
+        if (!is_good_god(new_god))
+            add_daction(DACT_ALLY_HOLY);
+
         _set_penance(old_god, 50);
         break;
 
@@ -3169,7 +3172,7 @@ static void _transfer_good_god_piety()
         static const map<god_type, const char*> farewell_messages = {
             { GOD_ELYVILON, "aid the meek" },
             { GOD_SHINING_ONE, "vanquish evil" },
-            { GOD_ZIN, "enforce order" },
+            { GOD_HEPLIAKLQANA, "right ancient wrongs" },
         };
 
         // Some feedback that piety moved over.
@@ -3202,10 +3205,8 @@ static string _good_god_wrath_message(god_type good_god)
             return "Your evil deeds will not go unpunished";
         case GOD_SHINING_ONE:
             return "You will pay for your evil ways, mortal";
-        case GOD_ZIN:
-            return make_stringf("You will suffer for embracing such %s",
-                                is_chaotic_god(you.religion) ? "chaos"
-                                                             : "evil");
+        case GOD_HEPLIAKLQANA:
+            return "You have forgotten the face of your ancestor";
         default:
             return "You will be buggily punished for this";
     }
@@ -3219,7 +3220,7 @@ static string _good_god_wrath_message(god_type good_god)
  */
 static void _check_good_god_wrath(god_type old_god)
 {
-    for (god_type good_god : { GOD_ELYVILON, GOD_SHINING_ONE, GOD_ZIN })
+    for (god_type good_god : { GOD_ELYVILON, GOD_SHINING_ONE, GOD_HEPLIAKLQANA })
     {
         if (old_god == good_god || !you.penance[good_god]
             || !god_hates_your_god(good_god, you.religion))
@@ -3743,6 +3744,7 @@ bool god_hates_your_god(god_type god, god_type your_god)
         return true;
 
     // Zin hates chaotic gods.
+    // Hellmonk: make this TSO or hep?
     if (god == GOD_ZIN && is_chaotic_god(your_god))
         return true;
 
@@ -3999,7 +4001,6 @@ int god_colour(god_type god) // mv - added
 {
     switch (god)
     {
-    case GOD_ZIN:
     case GOD_SHINING_ONE:
     case GOD_ELYVILON:
     case GOD_OKAWARU:
@@ -4018,7 +4019,8 @@ int god_colour(god_type god) // mv - added
 
     case GOD_GOZAG:
     case GOD_XOM:
-        return YELLOW;
+    case GOD_ZIN:
+       return YELLOW;
 
     case GOD_NEMELEX_XOBEH:
         return LIGHTMAGENTA;
