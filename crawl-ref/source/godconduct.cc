@@ -692,6 +692,10 @@ static like_map divine_likes[] =
     {
         { DID_KILL_UNCLEAN, _on_kill("you kill unclean or chaotic beings", MH_DEMONIC, true) },
         { DID_KILL_CHAOTIC, _on_kill(nullptr, MH_DEMONIC, true) },
+        { DID_KILL_PRIEST, {
+            "you kill the priests of other religions", true,
+            -6, 18, 0, " appreciates your killing of a heretic priest."
+        } },
     },
     // GOD_SHINING_ONE,
     {
