@@ -34,13 +34,10 @@ To further differentiate the elven subraces, deep elves will probably get a nois
 Dorfs are just an apt race at this point. high MR and HP, like DD. I didn't have any bright ideas for a cool mut, yet. I'll leave that up to Tavern/Reddit. Job 1 was making SD exist, not making them great or special or worthy of mainline crawl. If you miss Hill Dwarves or Mountain Dwarves, here you go! Suggestions on how to make them special are welcome.
 
 ### *Minor "personal preference" changes:*
-Ogres are cooler now in a big way. (that means HP) Trolls got taken down a peg, they'll be fine.
-
-Formicids can't fall in shafts by accident.
-
-Items don't block doorways.
-
-Berserkers start with no weapons, and no weapon skill.
+* Ogres have 1 more hp_mod, trolls have 1 less.
+* Formicids can't fall in shafts by accident.
+* Items don't block doorways.
+* Berserkers start with no weapons, and no weapon skill.
 
 #### *Below you will find the contents of the original DCSS readme:*
 [![Build Status](https://travis-ci.org/yrmvgh/crawl.svg?branch=master)](https://travis-ci.org/yrmvgh/crawl)
