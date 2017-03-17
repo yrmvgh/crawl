@@ -62,12 +62,11 @@ end
 # Gozag code uses it to find out where shops can normally place.
 NAME: serial_shops
 TAGS: allow_dup extra luniq
-DEPTH: D:4-, Depths, Orc, Elf, Shoals, Snake, Vaults
-CHANCE: 20% (D)
-CHANCE: 20% (Depths)
-CHANCE: 30% (Orc)
-CHANCE: 40% (Elf, Vaults)
-CHANCE: 20% (Shoals, Snake)
+DEPTH:  Depths, Orc, Shoals, Snake, Vaults
+CHANCE: 40% (Depths)
+CHANCE: 40% (Orc)
+CHANCE: 60% (Vaults)
+CHANCE: 30% (Shoals, Snake)
 {{
 hook("post_place", function()
     local num = num_shops()
@@ -364,7 +363,7 @@ SUBST: G : YlG
 : kfeat("s = general shop " .. shopname .. " ; \
 :   any weapon ego:draining w:15 | any weapon ego:pain | \
 :   any weapon ego:vampirism | any weapon ego:chaos w:1 | wand of clouds w:3 | \
-:   demon blade w:5 | demon trident w:5 | wand of random effects w:3 | \
+:   demon blade w:5 | demon trident w:5 | \
 :   demon whip w:5 | scroll of torment | staff of death | \
 :   book of necromancy | book of death | \
 :   book of unlife | randbook disc:necromancy w:5 | necronomicon w:1 | \
@@ -550,7 +549,6 @@ SUBST: Aa = t, B = ..t, b = .
 KFEAT: S = general shop type:Island suffix:Escapes count:7 ; \
  scroll of blinking | scroll of teleportation | scroll of fog w:8 | \
  potion of flight | potion of invisibility w:8 | potion of haste w:1 | \
- ring of flight w:10 | ring of stealth w:4 | \
  scroll of teleportation w:5 | wand of digging w:4
 MAP
   wwwwwwwww

@@ -1622,7 +1622,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_PORTAL_PROJECTILE, "Portal Projectile",
-    SPTYP_TRANSLOCATION,
+    SPTYP_TRANSLOCATION | SPTYP_HEXES,
     SPFLAG_NONE,
     3,
     50,
@@ -3243,7 +3243,7 @@ static const struct spell_desc spelldata[] =
     SPFLAG_TARGET | SPFLAG_NOT_SELF,
     6,
     100,
-    3, LOS_RADIUS,
+    3, LOS_DEFAULT_RANGE,
     6, 0,
     TILEG_CLOUD_CONE,
 },
@@ -3666,7 +3666,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_GRAVITAS, "Gell's Gravitas",
-    SPTYP_TRANSLOCATION | SPTYP_HEXES,
+    SPTYP_TRANSLOCATION,
     SPFLAG_TARGET | SPFLAG_NOT_SELF | SPFLAG_NEEDS_TRACER,
     3,
     200,
@@ -3870,7 +3870,7 @@ static const struct spell_desc spelldata[] =
     SPFLAG_DIR_OR_TARGET | SPFLAG_NOT_SELF | SPFLAG_NEEDS_TRACER,
     3,
     200,
-    2, LOS_RADIUS,
+    2, LOS_DEFAULT_RANGE,
     2, 0,
     TILEG_BECKONING,
 },

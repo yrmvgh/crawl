@@ -851,7 +851,7 @@ SUBST:  1 = 1 2:5 3:20
 SUBST:  2 = 2 2 .
 SUBST:  % = !:20 ?:5 .:20
 KITEM:  ! = whip / w:2 demon whip
-KITEM:  ? = wand of random effects
+KITEM:  ? = wand of acid
 COLOUR: " : yellow
 MAP
      ................
@@ -1974,7 +1974,7 @@ SHUFFLE: Gg/Gg/Gg/Hh, Pp/Pp/Pp/Qq
 SUBST: GP = x, g = r, p = c, HQ = @, hq = .
 COLOUR: r = red, c = blue
 KMONS: R = THE GIAGGOSTUONO
-KMONS: C = dev favorite
+KMONS: C = orb child
 KMONS: D = fire dragon
 KMONS: I = ice dragon
 KFEAT: r = c
@@ -2264,7 +2264,7 @@ SUBST:    a = ., b = 6G
 
 ## monsters
 MONS:     patrolling orb guardian, killer klown, electric golem, orb of fire
-MONS:     ancient lich, dev favorite
+MONS:     ancient lich, orb child
 SHUFFLE:  234
 SUBST:    8 = 8..., 5 = 5.
 # For the chambers closer to the orb, have 1/3 chances for more ancient liches,
@@ -2284,6 +2284,7 @@ LFLOORTILE: floor_rough_magenta
 LROCKTILE:  wall_zot_lightmagenta
 
 KITEM:    Z = Orb of Zot
+KFEAT:    R = enter_hell
 
 validate {{ return has_exit_from_glyph('Z') }}
 
@@ -2300,7 +2301,7 @@ XXXXXXXXXXXX...................XXXXXXXXXXXXXXXXXXX...................XXXXXXXXXXX
 XXXXXXXXXXX..........3...........XXXXXXXXXXXXXXX...........3..........XXXXXXXXXX
 XXXXXXXXXX..~.....................XXXXXXXXXXXXX.....................~..XXXXXXXXX
 XXXXXXXXXX.......?..?.....~.~.....XXX...1...XXX.....~.~.....?..?.......XXXXXXXXX
-XXXXXXXXXXX.~...........?.........XX..1...1..XX.........?...........~.XXXXXXXXXX
+XXXXXXXXXXX.~...........?.........XX..1.R.1..XX.........?...........~.XXXXXXXXXX
 XXXXXXXXXXXX......................X1...!!!...1X......................XXXXXXXXXXX
 XXXXXXXXXXXXX.....4....2....~.~......1.!Z!.1......~.~....2....4.....XXXXXXXXXXXX
 XXXXXXXXXXXX....?...?.....?...?...X1...!!!...1X...?...?.....?....?...XXXXXXXXXXX

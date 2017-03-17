@@ -782,11 +782,6 @@ ring of fire
 A ring that brings its wearer more in contact with the powers of fire. It
 grants resistance to heat and enhances fire magic.
 %%%%
-ring of flight
-
-A ring that allows its wearer to fly. Its power cannot be evoked while already
-airborne, making it ill-suited for longer trips above deadly liquid.
-%%%%
 ring of ice
 
 A ring that brings its wearer more in contact with the powers of ice. It grants
@@ -840,10 +835,6 @@ ring of slaying
 
 A ring that increases or decreases the wearer's effectiveness with ranged
 weapons and melee attacks, depending on its degree of enchantment.
-%%%%
-ring of stealth
-
-A ring that allows its wearer to move quietly, making them more stealthy.
 %%%%
 ring of strength
 
@@ -1185,10 +1176,6 @@ wand of polymorph
 
 A magical device which causes a creature to be transmogrified into another
 form. It is especially effective against shape-changing creatures.
-%%%%
-wand of random effects
-
-A magical device which can produce a variety of effects.
 %%%%
 wand of scattershot
 

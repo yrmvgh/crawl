@@ -465,6 +465,12 @@ public:
         textbackground(BLACK);
     }
 
+    void reset()
+    {
+        m_old_disp = -1;
+        m_request_redraw_after = 0;
+    }
+
  private:
     int m_old_disp;
     int m_request_redraw_after; // force a redraw at this turn count
@@ -488,6 +494,12 @@ static colour_bar Noise_Bar(WHITE, LIGHTGREY, LIGHTGREY, DARKGREY);
 static colour_bar Noise_Bar(LIGHTGREY, LIGHTGREY, MAGENTA, DARKGREY);
 #endif
 
+void reset_hud()
+{
+    HP_Bar.reset();
+    MP_Bar.reset();
+    Noise_Bar.reset();
+}
 
 // ----------------------------------------------------------------------
 // Status display
@@ -634,7 +646,7 @@ static void _print_stats_noise(int x, int y)
     }
 
     int bar_position;
-    if (you.wizard)
+    if (you.wizard && !silence)
     {
         Noise_Bar.horiz_bar_width = 6;
         bar_position = 10;
@@ -645,8 +657,10 @@ static void _print_stats_noise(int x, int y)
         // very complicated.
         CGOTOXY(x + bar_position - 3, y, GOTO_STAT);
         textcolour(noisecolour);
-        CPRINTF("%2d", you.get_noise_perception(false));
-    } else {
+        CPRINTF("%2d ", you.get_noise_perception(false));
+    }
+    else
+    {
         Noise_Bar.horiz_bar_width = 9;
         bar_position = 7;
     }
@@ -654,14 +668,14 @@ static void _print_stats_noise(int x, int y)
     {
         CGOTOXY(x + bar_position, y, GOTO_STAT);
         textcolour(LIGHTMAGENTA);
-        if (you.wizard)
-        {
-            CPRINTF("(Sil)  ");
-        } else {
-            CPRINTF("(Sil)     "); // These need to be one extra wide in case silence happens
-                                   // immediately after super-loud (magenta) noise
-        }
-    } else {
+
+        // This needs to be one extra wide in case silence happens
+        // immediately after super-loud (magenta) noise
+        CPRINTF("Silenced  ");
+        Noise_Bar.reset(); // so it doesn't display a change bar after silence ends
+    }
+    else 
+    {
         if (level == 1000)
         {
             // the bar goes up to 11 for extra loud sounds! (Well, it's really 10.)
@@ -1274,10 +1288,14 @@ static void _redraw_title()
     CGOTOXY(1, 1, GOTO_STAT);
     textcolour(small_layout && you.wizard ? LIGHTMAGENTA : YELLOW);
     CPRINTF("%s", chop_string(title, WIDTH).c_str());
-    if (you.wizard && !small_layout)
+    if (you.wizard)
         _draw_wizmode_flag("WIZARD");
-    else if (you.explore && !small_layout)
+    else if (you.explore)
         _draw_wizmode_flag("EXPLORE");
+    else if (crawl_state.difficulty == DIFFICULTY_CASUAL)
+        _draw_wizmode_flag("CASUAL");
+    else if (crawl_state.difficulty == DIFFICULTY_NORMAL)
+        _draw_wizmode_flag("NORMAL");
 #ifdef DGL_SIMPLE_MESSAGING
     update_message_status();
 #endif
@@ -1499,6 +1517,7 @@ static string _level_description_string_hud()
     // Indefinite articles
     else if (place.branch != BRANCH_PANDEMONIUM
              && place.branch != BRANCH_DESOLATION
+            &&  place.branch != BRANCH_ELF
              && !is_connected_branch(place.branch))
     {
         short_name = article_a(short_name);

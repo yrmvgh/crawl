@@ -1086,15 +1086,9 @@ static void _add_missing_branches()
     const level_id lc = level_id::current();
 
     // Could do all just in case, but this seems safer:
-    if (brentry[BRANCH_VAULTS] == lc)
-        _ensure_entry(BRANCH_VAULTS);
-    if (brentry[BRANCH_ZOT] == lc)
-        _ensure_entry(BRANCH_ZOT);
-    if (lc == level_id(BRANCH_DEPTHS, 2) || lc == level_id(BRANCH_DUNGEON, 21))
-        _ensure_entry(BRANCH_VESTIBULE);
     if (lc == level_id(BRANCH_DEPTHS, 3) || lc == level_id(BRANCH_DUNGEON, 24))
         _ensure_entry(BRANCH_PANDEMONIUM);
-    if (lc == level_id(BRANCH_DEPTHS, 1) || lc == level_id(BRANCH_DUNGEON, 25))
+    if (lc == level_id(BRANCH_DEPTHS, 3) || lc == level_id(BRANCH_DUNGEON, 25))
         _ensure_entry(BRANCH_ABYSS);
     if (player_in_branch(BRANCH_VESTIBULE))
     {
@@ -1326,6 +1320,7 @@ static void tag_construct_char(writer &th)
     marshallByte(th, you.wizard);
 
     marshallByte(th, crawl_state.type);
+    marshallByte(th, crawl_state.difficulty);
     if (crawl_state.game_is_tutorial())
         marshallString2(th, crawl_state.map);
 
@@ -2211,6 +2206,8 @@ void tag_read_char(reader &th, uint8_t format, uint8_t major, uint8_t minor)
         crawl_state.map = unmarshallString2(th);
     else
         crawl_state.map = "";
+	
+    crawl_state.difficulty = (game_difficulty_level) unmarshallUByte(th);
 
     if (major > 32 || major == 32 && minor > 26)
     {
@@ -3776,7 +3773,7 @@ static branch_type old_entries[] =
     /* Temple */ BRANCH_DUNGEON,
     /* Orc */    BRANCH_DUNGEON,
     /* Elf */    BRANCH_ORC,
-    /* Dwarf */  BRANCH_ELF,
+    /* Dwarf */  BRANCH_VAULTS,
     /* Lair */   BRANCH_DUNGEON,
     /* Swamp */  BRANCH_LAIR,
     /* Shoals */ BRANCH_LAIR,

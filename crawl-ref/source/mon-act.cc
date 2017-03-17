@@ -1066,7 +1066,6 @@ static bool _setup_wand_beam(bolt& beem, monster& mons, const item_def& wand)
 
     //XXX: implement these for monsters... (:
     if (wand.sub_type == WAND_ICEBLAST
-        || wand.sub_type == WAND_RANDOM_EFFECTS
         || wand.sub_type == WAND_CLOUDS
         || wand.sub_type == WAND_SCATTERSHOT)
     {
@@ -2835,6 +2834,7 @@ bool mon_can_move_to_pos(const monster* mons, const coord_def& delta,
            && (mons_class_flag(mons->type, M_BURROWS) || digs)
         || mons->type == MONS_SPATIAL_MAELSTROM
            && feat_is_solid(target_grid) && !feat_is_permarock(target_grid)
+           && !feat_is_critical(target_grid)
         || feat_is_tree(target_grid) && mons_flattens_trees(*mons)
         || target_grid == DNGN_GRATE && digs)
     {
@@ -2857,7 +2857,7 @@ bool mon_can_move_to_pos(const monster* mons, const coord_def& delta,
     if (mons->type == MONS_WANDERING_MUSHROOM
         || mons->type == MONS_DEATHCAP
         || (mons->type == MONS_LURKING_HORROR
-            && mons->foe_distance() > random2(LOS_RADIUS + 1)))
+            && mons->foe_distance() > random2(LOS_DEFAULT_RANGE + 1)))
     {
         if (!mons->wont_attack() && is_sanctuary(mons->pos()))
             return true;

@@ -612,7 +612,6 @@ static const char* _wand_type_name(int wandtype)
     case WAND_POLYMORPH:       return "polymorph";
     case WAND_ENSLAVEMENT:     return "enslavement";
     case WAND_ACID:            return "acid";
-    case WAND_RANDOM_EFFECTS:  return "random effects";
     case WAND_DISINTEGRATION:  return "disintegration";
     case WAND_CLOUDS:          return "clouds";
     case WAND_SCATTERSHOT:     return "scattershot";
@@ -768,13 +767,15 @@ const char* jewellery_effect_name(int jeweltype, bool terse)
         case RING_EVASION:               return "evasion";
 #if TAG_MAJOR_VERSION == 34
         case RING_SUSTAIN_ATTRIBUTES:    return "sustain attributes";
-#endif
         case RING_STEALTH:               return "stealth";
+#endif
         case RING_DEXTERITY:             return "dexterity";
         case RING_INTELLIGENCE:          return "intelligence";
         case RING_WIZARDRY:              return "wizardry";
         case RING_MAGICAL_POWER:         return "magical power";
+#if TAG_MAJOR_VERSION == 34
         case RING_FLIGHT:                return "flight";
+#endif
         case RING_LIFE_PROTECTION:       return "positive energy";
         case RING_PROTECTION_FROM_MAGIC: return "protection from magic";
         case RING_FIRE:                  return "fire";
@@ -827,11 +828,15 @@ const char* jewellery_effect_name(int jeweltype, bool terse)
         case RING_LOUDNESS:              return "Stlth-";
 #endif
         case RING_EVASION:               return "EV";
+#if TAG_MAJOR_VERSION == 34
         case RING_STEALTH:               return "Stlth+";
+#endif
         case RING_DEXTERITY:             return "Dex";
         case RING_INTELLIGENCE:          return "Int";
         case RING_MAGICAL_POWER:         return "MP+9";
+#if TAG_MAJOR_VERSION == 34
         case RING_FLIGHT:                return "+Fly";
+#endif
         case RING_LIFE_PROTECTION:       return "rN+";
         case RING_PROTECTION_FROM_MAGIC: return "MR+";
         case AMU_RAGE:                   return "+Rage";
@@ -2533,7 +2538,6 @@ void check_item_knowledge(bool unknown_items)
 {
     vector<const item_def*> items;
     vector<const item_def*> items_missile; //List of missiles should go after normal items
-    vector<const item_def*> items_food;    //List of foods should come next
     vector<const item_def*> items_other;   //List of other items should go after everything
     vector<SelItem> selected_items;
 
@@ -2579,17 +2583,10 @@ void check_item_knowledge(bool unknown_items)
 #if TAG_MAJOR_VERSION == 34
             if (i == MI_DART)
                 continue;
-#endif
-            _add_fake_item(OBJ_MISSILES, i, selected_items, items_missile);
-        }
-        // Foods
-        for (int i = 0; i < NUM_FOODS; i++)
-        {
-#if TAG_MAJOR_VERSION == 34
-            if (!is_real_food(static_cast<food_type>(i)))
+            if (i == MI_NEEDLE)
                 continue;
 #endif
-            _add_fake_item(OBJ_FOOD, i, selected_items, items_food);
+            _add_fake_item(OBJ_MISSILES, i, selected_items, items_missile);
         }
 
         // Misc.
@@ -2606,7 +2603,6 @@ void check_item_knowledge(bool unknown_items)
 
     sort(items.begin(), items.end(), _identified_item_names);
     sort(items_missile.begin(), items_missile.end(), _identified_item_names);
-    sort(items_food.begin(), items_food.end(), _identified_item_names);
 
     KnownMenu menu;
     string stitle;
@@ -2634,7 +2630,6 @@ void check_item_knowledge(bool unknown_items)
                                               : known_item_mangle, 'a', false);
 
     ml = menu.load_items(items_missile, known_item_mangle, ml, false);
-    ml = menu.load_items(items_food, known_item_mangle, ml, false);
     if (!items_other.empty())
     {
         menu.add_entry(new MenuEntry("Other Items", MEL_SUBTITLE));
@@ -2648,7 +2643,6 @@ void check_item_knowledge(bool unknown_items)
 
     deleteAll(items);
     deleteAll(items_missile);
-    deleteAll(items_food);
     deleteAll(items_other);
 
     if (!all_items_known && (last_char == '\\' || last_char == '-'))
@@ -3645,7 +3639,6 @@ bool is_useless_item(const item_def &item, bool temp)
 #if TAG_MAJOR_VERSION == 34
         case RING_TELEPORTATION:
             return !is_bad_item(item, temp);
-#endif
 
         case RING_FLIGHT:
             return you.permanent_flight()
@@ -3654,6 +3647,7 @@ bool is_useless_item(const item_def &item, bool temp)
 
         case RING_STEALTH:
             return player_mutation_level(MUT_NO_STEALTH);
+#endif
 
         default:
             return false;

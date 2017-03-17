@@ -743,6 +743,7 @@ void scorefile_entry::init_from(const scorefile_entry &se)
     zigmax             = se.zigmax;
     scrolls_used       = se.scrolls_used;
     potions_used       = se.potions_used;
+    difficulty         = se.difficulty;
     fixup_char_name();
 
     // We could just reset raw_line to "" instead.
@@ -1045,6 +1046,8 @@ void scorefile_entry::init_with_fields()
 
     scrolls_used = fields->int_field("scrollsused");
     potions_used = fields->int_field("potionsused");
+	
+    difficulty = (game_difficulty_level) fields->int_field("difficulty");
 
     fixup_char_name();
 }
@@ -1071,6 +1074,7 @@ void scorefile_entry::set_base_xlog_fields() const
 #ifdef EXPERIMENTAL_BRANCH
     fields->add_field("explbr", EXPERIMENTAL_BRANCH);
 #endif
+    fields->add_field("game", "hellcrawl");
     if (tiles)
         fields->add_field("tiles", "%d", tiles);
     fields->add_field("name", "%s", name.c_str());
@@ -1143,6 +1147,7 @@ void scorefile_entry::set_base_xlog_fields() const
         fields->add_field("zigdeepest", "%d", zigmax);
     fields->add_field("scrollsused", "%d", scrolls_used);
     fields->add_field("potionsused", "%d", potions_used);
+    fields->add_field("difficulty", "%d", difficulty);
 }
 
 void scorefile_entry::set_score_fields() const
@@ -1480,6 +1485,7 @@ void scorefile_entry::reset()
     zigmax               = 0;
     scrolls_used         = 0;
     potions_used         = 0;
+    difficulty           = DIFFICULTY_NORMAL;
 }
 
 static int _award_modified_experience()
@@ -1487,31 +1493,7 @@ static int _award_modified_experience()
     int xp = you.experience;
     int result = 0;
 
-    if (xp <= 250000)
-        return xp * 7 / 10;
-
-    result += 250000 * 7 / 10;
-    xp -= 250000;
-
-    if (xp <= 750000)
-    {
-        result += xp * 4 / 10;
-        return result;
-    }
-
-    result += 750000 * 4 / 10;
-    xp -= 750000;
-
-    if (xp <= 2000000)
-    {
-        result += xp * 2 / 10;
-        return result;
-    }
-
-    result += 2000000 * 2 / 10;
-    xp -= 2000000;
-
-    result += xp / 10;
+	result += xp / 4;
 
     return result;
 }
@@ -1567,6 +1549,14 @@ void scorefile_entry::init(time_t dt)
      *    + runes * (runes + 12) * 1000        (for everyone)
      *    + (250000 + 2 * (runes + 2) * 1000)  (winners only)
      *    + 250000 * 25000 * runes^2 / turns   (winners only)
+	 *
+     *  Hellcrawl scoring:
+     *
+     *    Nobody gives a shit about experience for won games, 
+     *    calc based on absdepth, xp, and runes for lost games 
+     *    and rune count for won ones, dividing by turns
+     *    this is kind of bad for lost games but who the fuck cares
+     *
      */
 
     // do points first.
@@ -1583,7 +1573,7 @@ void scorefile_entry::init(time_t dt)
     if (base_score)
     {
         // sprint games could overflow a 32 bit value
-        uint64_t pt = points + _award_modified_experience();
+        uint64_t pt = points;
 
         num_runes      = runes_in_pack();
         num_diff_runes = num_runes;
@@ -1592,14 +1582,20 @@ void scorefile_entry::init(time_t dt)
         // for the value of the inventory. -- 1KB
         if (death_type == KILLED_BY_WINNING)
         {
-            pt += 250000; // the Orb
-            pt += num_runes * 2000 + 4000;
-            pt += ((uint64_t)250000) * 25000 * num_runes * num_runes
-                / (1+you.num_turns);
+            pt += ((1+num_runes) * (1 + num_runes) * 1000);
+            pt *= 1000;
+            pt *= 1000;
+            pt *= 1000 / (1+you.num_turns);
         }
-        pt += num_runes * 10000;
-        pt += num_runes * (num_runes + 2) * 1000;
-
+        else
+        {
+            pt += (env.absdepth0 + num_runes) * 10000 / (1+you.num_turns);
+            pt += num_runes * 10000;
+            pt += _award_modified_experience();     
+        }
+		if (crawl_state.difficulty == DIFFICULTY_CASUAL)
+            pt = pt / 1000;
+		
         points = pt;
     }
     else
@@ -1719,6 +1715,7 @@ void scorefile_entry::init(time_t dt)
 
     wiz_mode = (you.wizard ? 1 : 0);
     explore_mode = (you.explore ? 1 : 0);
+    difficulty = crawl_state.difficulty;
 }
 
 string scorefile_entry::hiscore_line(death_desc_verbosity verbosity) const
@@ -1855,10 +1852,30 @@ string scorefile_entry::single_cdesc() const
     string scname;
     scname = chop_string(name, 10);
 
-    return make_stringf("%8d %s %s-%02d%s", points, scname.c_str(),
+    return make_stringf("%8d %s %s %s-%02d%s", points, scname.c_str(), difficulty_name().c_str(),
                         race_class_name.c_str(), lvl,
                         (wiz_mode == 1) ? "W" : (explore_mode == 1) ? "E" : "");
 }
+
+string scorefile_entry::difficulty_name() const
+{
+	string result;
+	switch(difficulty)
+	{
+	case DIFFICULTY_CASUAL:
+		result = "CASUAL";
+		break;
+    case DIFFICULTY_NORMAL:
+        result = "NORMAL";
+		break;
+	default:
+		result = "BUGGY";
+		break;
+	}
+
+	return result;
+}
+
 
 static string _append_sentence_delimiter(const string &sentence,
                                          const string &delimiter)
@@ -1908,7 +1925,9 @@ scorefile_entry::character_description(death_desc_verbosity verbosity) const
         desc += " HPs";
     }
 
-    desc += wiz_mode ? ") *WIZ*" : explore_mode ? ") *EXPLORE*" : ")";
+    desc += wiz_mode ? ") *WIZ*" : 
+         explore_mode ? ") *EXPLORE*" : 
+         difficulty == DIFFICULTY_CASUAL ? ") *CASUAL*" : ")";
     desc += _hiscore_newline_string();
 
     if (verbose)

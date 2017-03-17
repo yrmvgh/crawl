@@ -101,7 +101,7 @@ Form::Form(const form_entry &fe)
       hand_name(fe.hand_name), foot_name(fe.foot_name),
       flesh_equivalent(fe.flesh_equivalent),
       long_name(fe.long_name), description(fe.description),
-      resists(fe.resists), stealth_mod(fe.stealth_mod),
+      resists(fe.resists),
       base_unarmed_damage(fe.base_unarmed_damage),
       can_fly(fe.can_fly), can_swim(fe.can_swim),
       flat_ac(fe.flat_ac), power_ac(fe.power_ac), xl_ac(fe.xl_ac),
@@ -489,14 +489,6 @@ public:
     static const FormBlade &instance() { static FormBlade inst; return inst; }
 
     /**
-     * Find the player's base unarmed damage in this form.
-     */
-    int get_base_unarmed_damage() const override
-    {
-        return 8 + div_rand_round(you.strength() + you.dex(), 3);
-    }
-
-    /**
      * % screen description
      */
     string get_long_name() const override
@@ -558,14 +550,6 @@ private:
     DISALLOW_COPY_AND_ASSIGN(FormStatue);
 public:
     static const FormStatue &instance() { static FormStatue inst; return inst; }
-
-    /**
-     * Find the player's base unarmed damage in this form.
-     */
-    int get_base_unarmed_damage() const override
-    {
-        return 6 + div_rand_round(you.strength(), 3);
-    }
 
     /**
      * Get a message for transforming into this form.
@@ -689,15 +673,6 @@ public:
     }
 
     /**
-     * Find the player's base unarmed damage in this form.
-     */
-    int get_base_unarmed_damage() const override
-    {
-        // You also get another 6 damage from claws.
-        return 12 + div_rand_round(you.strength() * 2, 3);
-    }
-
-    /**
      * How many levels of resistance against fire does this form provide?
      */
     int res_fire() const override
@@ -778,17 +753,6 @@ public:
     monster_type get_equivalent_mons() const override
     {
         return you.species == SP_VAMPIRE ? MONS_VAMPIRE_BAT : MONS_BAT;
-    }
-
-    /**
-     * Get a multiplier for skill when calculating stealth values.
-     *
-     * @return  The stealth modifier for the given form. (0 = default to
-     *          racial values.)
-     */
-    int get_stealth_mod() const override
-    {
-        return you.species == SP_VAMPIRE ? 21 : stealth_mod;
     }
 
     /**
@@ -1410,8 +1374,6 @@ static bool _flying_in_new_form(transformation_type which_trans)
         item_info inf = get_item_info(*item);
 
         //similar code to safe_to_remove from item_use.cc
-        if (inf.is_type(OBJ_JEWELLERY, RING_FLIGHT))
-            sources_removed++;
         if (inf.base_type == OBJ_ARMOUR && inf.brand == SPARM_FLYING)
             sources_removed++;
         if (is_artefact(inf) && artefact_known_property(inf, ARTP_FLY))

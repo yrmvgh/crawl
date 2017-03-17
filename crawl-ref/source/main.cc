@@ -351,6 +351,7 @@ static void _reset_game()
     macro_clear_buffers();
     transit_lists_clear();
     you = player();
+    reset_hud();
     StashTrack = StashTracker();
     travel_cache = TravelCache();
     clear_level_target();
@@ -431,6 +432,21 @@ NORETURN static void _launch_game()
                     << species_name(you.species)
                     << " " << get_job_name(you.char_class) << ".</yellow>"
                     << endl;
+					
+	    msg::stream << "<yellow>You are playing on ";
+        switch(crawl_state.difficulty)
+        {
+        case DIFFICULTY_CASUAL:
+        	msg::stream << "Casual";
+        	break;
+        case DIFFICULTY_NORMAL:
+        	msg::stream << "Normal";
+        	break;
+        default:
+            msg::stream << "Buggy";
+        	break;
+        }
+        msg::stream << " difficulty. </yellow><yellow></yellow>" << endl;
     }
 
 #ifdef USE_TILE
@@ -1601,6 +1617,16 @@ static bool _can_take_stairs(dungeon_feature_type ftype, bool down,
             return false;
         }
     }
+	
+	//don't allow re-entry to pandemonium after pan has been completed
+    if (ftype == DNGN_ENTER_PANDEMONIUM)
+    {
+        if (you.uniq_map_tags.count("uniq_holypan"))
+        {
+            mpr("The lords of Pandemonium reject your second attempt to enter their realm!");
+            return false;
+        }
+    }
 
     // Rune locks
     int min_runes = 0;
@@ -1641,6 +1667,7 @@ static bool _prompt_dangerous_portal(dungeon_feature_type ftype)
     switch (ftype)
     {
     case DNGN_ENTER_PANDEMONIUM:
+        mpr("You will only be able to enter Pandemonium once."); //fall through to the prompt.
     case DNGN_ENTER_ABYSS:
         return yesno("If you enter this portal you might not be able to return "
                      "immediately. Continue?", false, 'n');
@@ -1655,15 +1682,35 @@ static bool _prompt_dangerous_portal(dungeon_feature_type ftype)
     }
 }
 
-static bool _prompt_unique_pan_rune(dungeon_feature_type ygrd)
+static bool _prompt_skippable_branch(dungeon_feature_type ftype)
 {
-    if (ygrd != DNGN_TRANSIT_PANDEMONIUM
-        && ygrd != DNGN_EXIT_PANDEMONIUM
-        && ygrd != DNGN_EXIT_THROUGH_ABYSS)
+	switch(ftype)
     {
+    case DNGN_ENTER_VAULTS:
+        if (player_in_branch(BRANCH_DUNGEON))
+            return yesno("This shortcut to the Vaults bypasses a rune. " 
+                         "Enter anyway?", false, 'n');
+        else return true;
+    case DNGN_ENTER_SLIME:
+        if (player_in_branch(BRANCH_ORC))
+            return yesno("This shortcut to the Slime Pits bypasses two runes. "
+                         "Enter anyway?", false, 'n');
+        else return true;
+    case DNGN_ENTER_DEPTHS:
+        if (player_in_branch(BRANCH_DUNGEON))
+            return yesno("This shortcut to the Depths bypasses three runes. "
+                         "Enter anyway?", false, 'n');
+        else if (player_in_branch(BRANCH_VAULTS))
+            return yesno("This shortcut to the Depths bypasses a runes. "
+                         "Enter anyway?", false, 'n');
+        else return true;
+    default:
         return true;
     }
+}
 
+static bool _prompt_unique_rune(dungeon_feature_type ygrd)
+{
     item_def* rune = find_floor_item(OBJ_RUNES);
     if (rune && item_is_unique_rune(*rune))
     {
@@ -1705,8 +1752,15 @@ static bool _prompt_stairs(dungeon_feature_type ygrd, bool down, bool shaft)
         }
     }
 
-    // Leaving Pan runes behind.
-    if (!_prompt_unique_pan_rune(ygrd))
+    // Leaving runes behind.
+    if (!_prompt_unique_rune(ygrd))
+    {
+        canned_msg(MSG_OK);
+        return false;
+    }
+	
+    // Prompt if the player is skipping branches.
+    if (!_prompt_skippable_branch(ygrd))
     {
         canned_msg(MSG_OK);
         return false;
@@ -1928,10 +1982,7 @@ static void _do_cycle_quiver(int dir)
 
 static void _do_list_gold()
 {
-    if (shopping_list.empty())
-        mprf("You have %d gold piece%s.", you.gold, you.gold != 1 ? "s" : "");
-    else
-        shopping_list.display();
+    mprf("You have %d gold piece%s.", you.gold, you.gold != 1 ? "s" : "");
 }
 
 // Note that in some actions, you don't want to clear afterwards.
@@ -3324,7 +3375,23 @@ static void _move_player(coord_def move)
         }
         else if (!try_to_swap) // attack!
         {
-            // Don't allow the player to freely locate invisible monsters
+            // Non-swimmers cannot attack while in deep water
+            if (grd(you.pos()) == DNGN_DEEP_WATER
+                && !you.can_swim() && !you.airborne())
+            {
+                mpr("You cannot attack while swimming in deep water!");
+                return;
+            }
+			
+			//You can't attack while in lava either
+			if (grd(you.pos()) == DNGN_LAVA
+                && !player_likes_lava() && !you.airborne())
+            {
+                mpr("You cannot attack while walking through lava!");
+                return;
+            }
+			
+			// Don't allow the player to freely locate invisible monsters
             // with confirmation prompts.
             if (!you.can_see(*targ_monst)
                 && !you.confused()

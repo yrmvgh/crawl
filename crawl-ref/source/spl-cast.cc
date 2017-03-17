@@ -618,6 +618,21 @@ static bool _can_cast()
         // included in default force_more_message
         return false;
     }
+	
+     
+    if (grd(you.pos()) == DNGN_DEEP_WATER
+        && !you.can_swim() && !you.airborne())
+    {
+        mpr("You cannot cast spells while swimming in deep water!");
+        return false;
+    }
+	
+    if (grd(you.pos()) == DNGN_LAVA
+        && !player_likes_lava() && !you.airborne())
+    {
+        mpr("You cannot cast spells while swimming in lava!");
+        return false;
+    }
 
     if (you.duration[DUR_NO_CAST])
     {

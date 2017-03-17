@@ -749,10 +749,12 @@ const set<pair<object_class_type, int> > removed_items =
     { OBJ_JEWELLERY, RING_REGENERATION },
     { OBJ_JEWELLERY, RING_SUSTAIN_ATTRIBUTES },
     { OBJ_JEWELLERY, RING_TELEPORT_CONTROL },
-	{ OBJ_JEWELLERY, RING_PROTECTION_FROM_FIRE },
-	{ OBJ_JEWELLERY, RING_PROTECTION_FROM_COLD },
-	{ OBJ_JEWELLERY, RING_TELEPORTATION },
-	{ OBJ_JEWELLERY, RING_LOUDNESS },
+    { OBJ_JEWELLERY, RING_PROTECTION_FROM_FIRE },
+    { OBJ_JEWELLERY, RING_PROTECTION_FROM_COLD },
+    { OBJ_JEWELLERY, RING_TELEPORTATION },
+    { OBJ_JEWELLERY, RING_LOUDNESS },
+    { OBJ_JEWELLERY, RING_STEALTH },
+    { OBJ_JEWELLERY, RING_FLIGHT },
 	{ OBJ_STAVES, 	 STAFF_POISON },
     { OBJ_STAVES,    STAFF_ENCHANTMENT },
     { OBJ_STAVES,    STAFF_CHANNELING },
@@ -799,12 +801,14 @@ const set<pair<object_class_type, int> > removed_items =
 	{ OBJ_WANDS, 	 WAND_HASTING},
 	{ OBJ_WANDS,     WAND_TELEPORTATION },
     { OBJ_WANDS,     WAND_HEAL_WOUNDS_REMOVED },
+    { OBJ_WANDS,     WAND_RANDOM_EFFECTS },
     { OBJ_SCROLLS,   SCR_CURSE_WEAPON },
     { OBJ_SCROLLS,   SCR_CURSE_ARMOUR },
     { OBJ_SCROLLS,   SCR_CURSE_JEWELLERY },
 	{ OBJ_SCROLLS,   SCR_IDENTIFY },
 	{ OBJ_SCROLLS,   SCR_REMOVE_CURSE },
 	{ OBJ_SCROLLS,   SCR_RANDOM_USELESSNESS },
+	{ OBJ_MISSILES,   MI_NEEDLE },
 #endif
     // Outside the #if because we probably won't remove these.
     { OBJ_RUNES,     RUNE_ELF },
@@ -1593,7 +1597,6 @@ int wand_charge_value(int type)
     case WAND_FLAME:
     case WAND_SLOWING:
     case WAND_CONFUSION:
-    case WAND_RANDOM_EFFECTS:
         return 6; 
     }
 }
@@ -1643,7 +1646,6 @@ bool is_offensive_wand(const item_def& item)
     {
     // Monsters don't use those, so no need to warn the player about them.
     case WAND_ENSLAVEMENT:
-    case WAND_RANDOM_EFFECTS:
     case WAND_DIGGING:
 		return false;
 
@@ -2248,7 +2250,6 @@ bool ring_has_stackable_effect(const item_def &item)
     switch (item.sub_type)
     {
     case RING_LIFE_PROTECTION:
-    case RING_STEALTH:
     case RING_WIZARDRY:
     case RING_FIRE:
     case RING_ICE:
@@ -2686,8 +2687,7 @@ bool gives_ability(const item_def &item)
     case OBJ_WEAPONS:
         break;
     case OBJ_JEWELLERY:
-        if (item.sub_type == RING_FLIGHT
-            || item.sub_type == AMU_RAGE)
+        if (item.sub_type == AMU_RAGE)
         {
             return true;
         }

@@ -150,14 +150,16 @@ The floor.
 %%%%
 Some deep water
 
-A pool of deep water. Only very large creatures can wade through this, and only
-those well-adapted to water can swim through it; for the rest, the only way
-through is to fly over.
+A pool of deep water. Very large creatures can wade through this, and
+those well-adapted to water can easily swim through it. Less-adapted
+species can swim through it with difficulty, but will be unable to 
+attack or cast while doing so. Most other dungeon monsters will just drown.
 %%%%
 Some lava
 
 An intensely hot pool of molten rock, emitting clouds of sulphurous smoke.
-Nothing but the mythical salamander can cross this without flight.
+Nothing but the mythical salamander can step through this without extreme 
+pain and difficulty, but it is possible to safely fly across.
 %%%%
 Some shallow water
 
@@ -358,7 +360,9 @@ A gate leading to yet another region of Pandemonium. There'll always be more.
 %%%%
 A one-way gate leading to the halls of Pandemonium
 
-A gate leading to the endless halls of Pandemonium.
+A gate leading to the halls of Pandemonium. Mighty Pandemonium Lords 
+reside here. You may be able to sneak into Pandemonium once, but the Lords
+would surely discover and prevent any repeat attempts to gain entry.
 %%%%
 A staircase to the Depths
 
@@ -393,7 +397,8 @@ A gateway leading to Gehenna.
 %%%%
 A gateway to Hell
 
-A gateway leading to the Vestibule of Hell. Few would go there voluntarily.
+A gateway leading to the Vestibule of Hell. Few are permitted to enter 
+voluntarily. The Orb of Zot will force the gateway to give you passage.
 %%%%
 A gateway to the Iron City of Dis
 
@@ -943,6 +948,14 @@ A ruined idol
 
 A monument to the glory of a dead god. The statue has been methodically
 defaced; not a single distinguishing feature remains.
+%%%%
+#elf
+A portal to the Elven Halls
+
+A staircase-shaped portal to the elven halls. Elves occasionally tempt
+visitors to enter their realm in order to use them for their strange, 
+nefarious purposes. A crafty intruder might be able to make away with
+some of their fabled treasures.
 %%%%
 ########################################################################
 ### Sprint

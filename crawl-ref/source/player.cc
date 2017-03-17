@@ -212,7 +212,18 @@ bool check_moveto_trap(const coord_def& p, const string &move_verb,
 
 static bool _check_moveto_dangerous(const coord_def& p, const string& msg)
 {
-    if (you.can_swim() && feat_is_water(env.grid(p))
+    if (env.grid(p) == DNGN_LAVA && env.grid(you.pos()) != DNGN_LAVA
+    && !player_likes_lava() && !you.airborne())
+    {
+	    if(!yesno("Really immerse yourself in lava?", false, 'n'))
+        {
+            mpr("Okay, then.");
+			return false;
+        }
+        else return true;
+    }
+	
+	if (you.can_swim() && feat_is_water(env.grid(p))
         || you.airborne() || !is_feat_dangerous(env.grid(p)))
     {
         return true;
@@ -233,8 +244,8 @@ bool check_moveto_terrain(const coord_def& p, const string &move_verb,
                           const string &msg, bool *prompted)
 {
     if (!_check_moveto_dangerous(p, msg))
-        return false
-;
+        return false;
+	
     if (!need_expiration_warning() && need_expiration_warning(p)
         && !crawl_state.disables[DIS_CONFIRMATIONS])
     {
@@ -265,6 +276,7 @@ bool check_moveto_terrain(const coord_def& p, const string &move_verb,
             return false;
         }
     }
+
     return true;
 }
 
@@ -417,34 +429,43 @@ void moveto_location_effects(dungeon_feature_type old_feat,
 
     if (you.ground_level())
     {
-        if (player_likes_lava(false))
+
+        if (feat_is_lava(new_grid) && !feat_is_lava(old_feat))
         {
-            if (feat_is_lava(new_grid) && !feat_is_lava(old_feat))
-            {
-                if (!stepped)
-                    noisy(4, you.pos(), "Gloop!");
+            if (!stepped)
+                noisy(4, you.pos(), "Gloop!");
 
-                mprf("You %s lava.",
-                     (stepped) ? "slowly immerse yourself in the" : "fall into the");
+            mprf("You %s lava.",
+                (stepped) ? "slowly immerse yourself in the" : "fall into the");
 
-                // Extra time if you stepped in.
-                if (stepped)
-                    you.time_taken *= 2;
+            // Extra time if you stepped in.
+            if (stepped)
+                you.time_taken *= 2;
 #if TAG_MAJOR_VERSION == 34
+            if (player_likes_lava(false))
+            {
                 // This gets called here because otherwise you wouldn't heat
                 // until your second turn in lava.
                 if (temperature() < TEMP_FIRE)
                     mpr("The lava instantly superheats you.");
                 you.temperature = TEMP_MAX;
+            }
 #endif
-            }
-
-            else if (!feat_is_lava(new_grid) && feat_is_lava(old_feat))
-            {
-                mpr("You slowly pull yourself out of the lava.");
-                you.time_taken *= 2;
-            }
         }
+
+        else if (!feat_is_lava(new_grid) && feat_is_lava(old_feat))
+        {
+            mpr("You slowly pull yourself out of the lava.");
+            you.time_taken *= 2;
+        }
+		
+        else if (feat_is_lava(new_grid) && feat_is_lava(old_feat))
+        {
+			if (stepped)
+            {
+			    you.time_taken *= 2;
+			}
+		}
 
         if (feat_is_water(new_grid))
         {
@@ -453,21 +474,33 @@ void moveto_location_effects(dungeon_feature_type old_feat,
 
             if (!you.can_swim() && !you.can_water_walk())
             {
+                ASSERT(new_grid == DNGN_SHALLOW_WATER
+                       || new_grid == DNGN_DEEP_WATER);
+                const bool shallow = new_grid == DNGN_SHALLOW_WATER;
+				
                 if (stepped)
                 {
-                    you.time_taken *= 13 + random2(8);
-                    you.time_taken /= 10;
+                    const int penalty = shallow ? 3 : 5;
+                    you.time_taken = div_rand_round(you.time_taken * penalty, 2);
                 }
 
                 if (!feat_is_water(old_feat))
                 {
                     mprf("You %s the %s water.",
                          stepped ? "enter" : "fall into",
-                         new_grid == DNGN_SHALLOW_WATER ? "shallow" : "deep");
+                         shallow ? "shallow" : "deep");
                 }
 
-                if (new_grid == DNGN_DEEP_WATER && old_feat != DNGN_DEEP_WATER)
-                    mpr("You sink to the bottom.");
+                if (new_grid == DNGN_DEEP_WATER
+                    && old_feat != DNGN_DEEP_WATER)
+                {
+                    mpr("You start swimming.");
+                }
+                if (new_grid != DNGN_DEEP_WATER
+                    && old_feat == DNGN_DEEP_WATER)
+                {
+                    mprf("The water is shallow enough to stand again.");
+                }
 
                 if (!feat_is_water(old_feat))
                 {
@@ -548,18 +581,7 @@ void move_player_to_grid(const coord_def& p, bool stepped)
 bool is_feat_dangerous(dungeon_feature_type grid, bool permanently,
                        bool ignore_flight)
 {
-    if (!ignore_flight
-        && (you.permanent_flight() || you.airborne() && !permanently))
-    {
-        return false;
-    }
-    else if (grid == DNGN_DEEP_WATER && !player_likes_water(permanently)
-             || grid == DNGN_LAVA && !player_likes_lava(permanently))
-    {
-        return true;
-    }
-    else
-        return false;
+    return false;
 }
 
 bool is_map_persistent()
@@ -656,15 +678,15 @@ monster_type player_mons(bool transform)
 
 void update_vision_range()
 {
-    you.normal_vision = LOS_RADIUS;
+    you.normal_vision = LOS_DEFAULT_RANGE;
     int nom   = 1;
     int denom = 1;
 
     // Nightstalker gives -1/-2/-3.
     if (player_mutation_level(MUT_NIGHTSTALKER))
     {
-        nom *= LOS_RADIUS - player_mutation_level(MUT_NIGHTSTALKER);
-        denom *= LOS_RADIUS;
+        nom *= LOS_DEFAULT_RANGE - player_mutation_level(MUT_NIGHTSTALKER);
+        denom *= LOS_DEFAULT_RANGE;
     }
 
     // Lantern of shadows.
@@ -1596,9 +1618,6 @@ int player_res_electricity(bool calc_unid, bool temp, bool items)
 
     if (temp)
     {
-        if (you.attribute[ATTR_DIVINE_LIGHTNING_PROTECTION])
-            return 3;
-
         if (you.duration[DUR_RESISTANCE])
             re++;
 
@@ -2711,13 +2730,21 @@ void gain_exp(unsigned int exp_gained, unsigned int* actual_gain)
     _recharge_xp_evokers(skill_xp);
     _reduce_abyss_xp_timer(skill_xp);
     _handle_xp_drain(skill_xp);
+	
+    //for difficulty levels other than normal,
+    //multiply both exp gain and skill exp (but don't multiply xp-gated effects)
+    if (crawl_state.difficulty == DIFFICULTY_CASUAL)
+    {
+	    exp_gained *= 2;
+        skill_xp *= 2;
+	}
 
     if (player_under_penance(GOD_HEPLIAKLQANA))
         return; // no xp for you!
 
     // handle actual experience gains,
     // i.e. XL and skills
-
+		
     const unsigned int old_exp = you.experience;
 
     dprf("gain_exp: %d", exp_gained);
@@ -3123,26 +3150,6 @@ void adjust_level(int diff, bool just_xp)
 }
 
 /**
- * Return a multiplier for skill when calculating stealth values, based on the
- * player's species & form.
- *
- * @return The player's current stealth multiplier value.
- */
-static int _stealth_mod()
-{
-    const int form_stealth_mod = get_form()->get_stealth_mod();
-
-    if (form_stealth_mod != 0)
-        return form_stealth_mod;
-
-    int species_stealth_mod = species_stealth_modifier(you.species);
-    if (you.form == TRAN_STATUE)
-        species_stealth_mod -= 3;
-
-    return species_stealth_mod;
-}
-
-/**
  * Get the player's current stealth value.
  *
  * XXX: rename this to something more reasonable
@@ -3169,7 +3176,7 @@ int check_stealth()
 
     int stealth = you.dex() * 3;
 
-    stealth += you.skill(SK_STEALTH, _stealth_mod());
+    stealth += you.skill(SK_STEALTH, 18);
 
     if (you.confused())
         stealth /= 3;
@@ -3188,11 +3195,12 @@ int check_stealth()
         dprf("Stealth penalty for armour (ep: %d): %d", ep, penalty);
 #endif
         stealth -= penalty;
+
+        const int pips = armour_type_prop(arm->sub_type, ARMF_STEALTH);
+        stealth += pips * STEALTH_PIP;
     }
 
     stealth += STEALTH_PIP * you.scan_artefacts(ARTP_STEALTH);
-
-    stealth += STEALTH_PIP * you.wearing(EQ_RINGS, RING_STEALTH);
 
     const item_def *body_armour = you.slot_item(EQ_BODY_ARMOUR);
     if (body_armour)
@@ -3206,6 +3214,30 @@ int check_stealth()
 
     if (you.duration[DUR_AGILITY])
         stealth += STEALTH_PIP;
+	
+    if (cloak && get_armour_ego_type(*cloak) == SPARM_STEALTH)
+	    stealth += STEALTH_PIP;
+
+    // Mutations.
+    stealth += STEALTH_PIP * player_mutation_level(MUT_NIGHTSTALKER);
+    stealth += (STEALTH_PIP / 2)
+                * player_mutation_level(MUT_THIN_SKELETAL_STRUCTURE);
+    stealth += STEALTH_PIP * player_mutation_level(MUT_CAMOUFLAGE);
+    const int how_transparent = player_mutation_level(MUT_TRANSLUCENT_SKIN);
+    if (how_transparent)
+        stealth += 15 * (how_transparent);
+
+    // Radiating silence is the negative complement of shouting all the
+    // time... a sudden change from background noise to no noise is going
+    // to clue anything in to the fact that something is very wrong...
+    // a personal silence spell would naturally be different, but this
+    // silence radiates for a distance and prevents monster spellcasting,
+    // which pretty much gives away the stealth game.
+    if (you.duration[DUR_SILENCE])
+        stealth -= STEALTH_PIP;
+	
+    if (you.species == SP_VAMPIRE)
+		stealth += STEALTH_PIP; // innate vampire stealth boost
 
     if (!you.airborne())
     {
@@ -3217,13 +3249,8 @@ int check_stealth()
             else if (!you.can_swim() && !you.extra_balanced())
                 stealth /= 2;       // splashy-splashy
         }
-
         else if (boots && get_armour_ego_type(*boots) == SPARM_STEALTH)
             stealth += STEALTH_PIP;
-		
-		else if (cloak && get_armour_ego_type(*cloak) == SPARM_STEALTH)
-			stealth += STEALTH_PIP;
-
         else if (you.has_usable_hooves())
             stealth -= 5 + 5 * player_mutation_level(MUT_HOOVES);
     }
@@ -3244,9 +3271,6 @@ int check_stealth()
     stealth += (STEALTH_PIP / 2)
                 * player_mutation_level(MUT_THIN_SKELETAL_STRUCTURE);
     stealth += STEALTH_PIP * player_mutation_level(MUT_CAMOUFLAGE);
-    const int how_transparent = player_mutation_level(MUT_TRANSLUCENT_SKIN);
-    if (how_transparent)
-        stealth += 15 * (how_transparent);
 
     // it's easier to be stealthy when there's a lot of background noise
     stealth += 2 * current_level_ambient_noise();
@@ -3275,6 +3299,9 @@ int check_stealth()
         stealth *= umbra_mul;
         stealth /= umbra_div;
     }
+	
+    if (you.form == TRAN_SHADOW)
+        stealth *= 2;
 
     // If you're surrounded by a storm, you're inherently pretty conspicuous.
     if (have_passive(passive_t::storm_shield))
@@ -5230,8 +5257,8 @@ player::player()
 
     octopus_king_rings = 0;
 
-    normal_vision    = LOS_RADIUS;
-    current_vision   = LOS_RADIUS;
+    normal_vision    = LOS_DEFAULT_RANGE;
+    current_vision   = LOS_DEFAULT_RANGE;
 
     real_time_ms     = chrono::milliseconds::zero();
     real_time_delta  = chrono::milliseconds::zero();
@@ -5488,9 +5515,7 @@ bool player::can_water_walk() const
 
 int player::visible_igrd(const coord_def &where) const
 {
-    if (grd(where) == DNGN_LAVA
-        || (grd(where) == DNGN_DEEP_WATER
-            && !species_likes_water(species)))
+    if (grd(where) == DNGN_LAVA)
     {
         return NON_ITEM;
     }

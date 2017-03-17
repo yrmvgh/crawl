@@ -119,9 +119,11 @@ successful melee attack, allowing them to inflict draining, cause weakness, or
 deplete magical power.
 %%%%
 Blade Hands spell
+Causes long, scythe-shaped blades to grow from the caster's hands, increasing
+melee damage significantly.
 
-Causes long, scythe-shaped blades to grow from the caster's hands. It makes
-spellcasting somewhat difficult.
+While transformed, any equipped weapons are melded. The caster also becomes
+unable to evoke wands, and casting spells becomes somewhat more difficult.
 %%%%
 Blink Allies Away spell
 
@@ -471,7 +473,10 @@ Dragon Form spell
     desc = desc .. "."
 
     return desc
-}}
+}} The caster becomes able to deal incredible damage in melee combat, and
+they become much more robust, although their evasiveness is reduced.
+
+While transformed, any equipped weapons and armour are melded.
 %%%%
 Dragon's Call spell
 
@@ -1255,10 +1260,13 @@ the target may have.
 %%%%
 Statue Form spell
 
-Transforms the caster into a slow but extremely robust stone statue, capable of
-dealing powerful blows with weapons or bare fists. The caster's stone body is
-insulated from electricity and gains resistance to poison, rotting and negative
-energy.
+
+Transforms the caster into a slow but extremely robust stone statue. The
+caster's melee damage, both unarmed and with weapons, is substantially
+increased. The caster's stone body is insulated from electricity and gains
+resistance to poison, rotting and negative energy.
+
+While transformed, any equipped body armour, gloves and boots are melded.
 %%%%
 Steam Ball spell
 

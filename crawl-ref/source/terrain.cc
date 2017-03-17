@@ -247,7 +247,7 @@ bool feat_is_stair(dungeon_feature_type gridc)
  */
 bool feat_is_travelable_stair(dungeon_feature_type feat)
 {
-    return feat_is_stone_stair(feat)
+    return feat_is_stone_stair_down(feat)
            || feat_is_escape_hatch(feat)
            || feat_is_branch_entrance(feat)
            || feat_is_branch_exit(feat)
@@ -259,8 +259,7 @@ bool feat_is_travelable_stair(dungeon_feature_type feat)
  */
 bool feat_is_escape_hatch(dungeon_feature_type feat)
 {
-    return feat == DNGN_ESCAPE_HATCH_DOWN
-           || feat == DNGN_ESCAPE_HATCH_UP;
+    return feat == DNGN_ESCAPE_HATCH_DOWN;
 }
 
 /** Is this feature a gate?
@@ -312,8 +311,7 @@ command_type feat_stair_direction(dungeon_feature_type feat)
     {
         return CMD_GO_DOWNSTAIRS;
     }
-    if (feat_is_portal_exit(feat)
-        || feat_is_branch_exit(feat))
+    if (feat_is_portal_exit(feat) || feat == DNGN_EXIT_DUNGEON)
     {
         return CMD_GO_UPSTAIRS;
     }
@@ -323,10 +321,6 @@ command_type feat_stair_direction(dungeon_feature_type feat)
     case DNGN_ENTER_HELL:
         return player_in_hell() ? CMD_GO_UPSTAIRS : CMD_GO_DOWNSTAIRS;
 
-    case DNGN_STONE_STAIRS_UP_I:
-    case DNGN_STONE_STAIRS_UP_II:
-    case DNGN_STONE_STAIRS_UP_III:
-    case DNGN_ESCAPE_HATCH_UP:
     case DNGN_ENTER_SHOP:
     case DNGN_EXIT_HELL:
         return CMD_GO_UPSTAIRS;
@@ -629,10 +623,7 @@ bool feat_is_mimicable(dungeon_feature_type feat, bool strict)
     {
         return true;
     }
-
-    if (feat == DNGN_ENTER_ZIGGURAT)
-        return false;
-
+	
     if (feat_is_portal_entrance(feat))
         return true;
 
@@ -860,8 +851,7 @@ bool feat_destroys_items(dungeon_feature_type feat)
  */
 bool feat_eliminates_items(dungeon_feature_type feat)
 {
-    return feat_destroys_items(feat)
-           || feat == DNGN_DEEP_WATER && !species_likes_water(you.species);
+    return feat_destroys_items(feat);
 }
 
 static coord_def _dgn_find_nearest_square(
@@ -1557,6 +1547,7 @@ bool slide_feature_over(const coord_def &src, coord_def preferred_dest,
  */
 void fall_into_a_pool(dungeon_feature_type terrain)
 {
+    ASSERT(terrain == DNGN_LAVA || terrain == DNGN_DEEP_WATER);
     if (terrain == DNGN_DEEP_WATER)
     {
         if (you.can_water_walk() || form_likes_water())
@@ -1569,32 +1560,10 @@ void fall_into_a_pool(dungeon_feature_type terrain)
         }
     }
 
-    mprf("You fall into the %s!",
-         (terrain == DNGN_LAVA)       ? "lava" :
-         (terrain == DNGN_DEEP_WATER) ? "water"
-                                      : "programming rift");
+    mprf("You fall into the %s!", terrain == DNGN_LAVA ? "lava" : "water");
     // included in default force_more_message
 
     clear_messages();
-    if (terrain == DNGN_LAVA)
-    {
-        if (you.species == SP_MUMMY)
-            mpr("You burn to ash...");
-        else
-            mpr("The lava burns you to a cinder!");
-        ouch(INSTANT_DEATH, KILLED_BY_LAVA);
-    }
-    else if (terrain == DNGN_DEEP_WATER)
-    {
-        mpr("You sink like a stone!");
-
-        if (you.is_nonliving() || you.undead_state())
-            mpr("You fall apart...");
-        else
-            mpr("You drown...");
-
-        ouch(INSTANT_DEATH, KILLED_BY_WATER);
-    }
 }
 
 typedef map<string, dungeon_feature_type> feat_desc_map;
@@ -1932,6 +1901,10 @@ void set_terrain_changed(const coord_def p)
 bool is_boring_terrain(dungeon_feature_type feat)
 {
     if (!is_notable_terrain(feat))
+        return true;
+	
+    if(feat == DNGN_STONE_STAIRS_UP_I || feat == DNGN_STONE_STAIRS_UP_II
+       || feat == DNGN_STONE_STAIRS_UP_III || feat == DNGN_ESCAPE_HATCH_UP)
         return true;
 
     // Altars in the temple are boring.

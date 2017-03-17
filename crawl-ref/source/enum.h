@@ -182,6 +182,13 @@ public:
     EXPANDMACRO(DEF_BITFIELD_OPERATORS(fieldT, __VA_ARGS__, ))
 // The trailing comma suppresses "ISO C99 requires rest arguments to be used"
 
+enum game_difficulty_level
+{
+	DIFFICULTY_ASK = -1,
+	DIFFICULTY_CASUAL = 0,
+	DIFFICULTY_NORMAL = 1,
+};
+
 enum lang_t
 {
     LANG_EN = 0,
@@ -493,8 +500,9 @@ enum activity_interrupt_type
 
 enum attribute_type
 {
-    ATTR_DIVINE_LIGHTNING_PROTECTION,
+
 #if TAG_MAJOR_VERSION == 34
+    ATTR_DIVINE_LIGHTNING_PROTECTION,
     ATTR_DIVINE_REGENERATION,
 #endif
     ATTR_DIVINE_DEATH_CHANNEL,
@@ -1388,7 +1396,7 @@ enum game_chapter
 enum game_type
 {
     GAME_TYPE_UNSPECIFIED,
-    GAME_TYPE_NORMAL,
+    GAME_TYPE_NORMAL, //'Normal' mode for this build is hellcrawl
     GAME_TYPE_TUTORIAL,
     GAME_TYPE_ARENA,
     GAME_TYPE_SPRINT,

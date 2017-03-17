@@ -113,35 +113,31 @@ function ($, comm, enums, map_knowledge, messages, options) {
 
         // The adjusted_noise value has already been rescaled in
         // player.cc:get_adjusted_noise. It ranges from 0 to 1000.
-        var noise_color = "", adjusted_level = 0;
-        if (level <= 333)
-        {
-            noise_color = "#D3D3D3"; // lightgray
-        }
-        else if (level <= 666)
-        {
-            noise_color = "#FFD700"; // gold
-        }
-        else if (level < 1000)
-        {
-            noise_color = "#FF0000"; // red
-        } else {
-            $("#stats_noise_status").text(level);
-            noise_color = "#FF00FF"; // magenta
-        }
+        var adjusted_level = 0, noise_cat = "";
 
-        if (player.has_status("silence"))
+        // colors are set in `style.css` via the selector `data-level`.
+        if (level <= 333)
+            noise_cat = "quiet";
+        else if (level <= 666)
+            noise_cat = "loud";
+        else if (level < 1000)
+            noise_cat = "veryloud";
+        else
+            noise_cat = "superloud";
+
+        var silenced = player.has_status("silence")
+        if (silenced)
         {
             level = 0;
             old_value = 0;
-            $("#stats_noise_bar").css("background-color", "#000000");
-            // I couldn't get this to work just directly putting the text in #stats_noise_bar
-            $("#stats_noise_status").text("(Sil)");
+            noise_cat = "blank";
+            // I couldn't get this to work just directly putting the text in #stats_noise_bar,
+            // because clearing the text later will adjust the span width.
+            $("#stats_noise_status").text("Silenced");
         } else {
-            $("#stats_noise_bar").css("background-color", "#2F2F2F");
             $("#stats_noise_status").text("");
-            $("#stats_noise_status").css("width", 0);
         }
+        $("#stats_noise").attr("data-level", noise_cat);
 
         player.old_noise = level;
 
@@ -153,33 +149,18 @@ function ($, comm, enums, map_knowledge, messages, options) {
             change_bar = 10000 - full_bar;
         }
 
-        if (player.wizard) // the exact value is too hard to interpret to show outside of wizmode, because noise propagation is very complicated.
+        if (player.wizard && !silenced)
         {
-            $("#stats_noise").text(player.noise);
-            $("#stats_noise").css("color", noise_color);
-            if (level == 1000)
-            {
-                // go to 11
-                $("#stats_noise_container").css("width", "95%");
-                $("#stats_noise_bar").css("width", "46.312%"); // This comes from solving -15 - .85 * 40 = -5 - .95 * x
-            } else {
-                $("#stats_noise_container").css("width", "85%");
-                $("#stats_noise_bar").css("width", "40%");
-            }
-        } else {
-            $("#stats_noise").text("");
-            if (level == 1000)
-            {
-                // go to 11
-                $("#stats_noise_container").css("width", "95%");
-                $("#stats_noise_bar").css("width", "60.632%"); // This comes from solving -15 - .85 * 56 = -5 - .95 * x
-            } else {
-                $("#stats_noise_container").css("width", "85%");
-                $("#stats_noise_bar").css("width", "56%");
-            }
+            // the exact value is too hard to interpret to show outside of
+            // wizmode, because noise propagation is very complicated.
+            $("#stats_noise").attr("data-shownum", true);
+            $("#stats_noise_num").text(player.noise);
         }
-
-        $("#stats_noise_bar_full").css("background-color", noise_color);
+        else
+        {
+            $("#stats_noise").attr("data-shownum", null);
+            $("#stats_noise_num").text("");
+        }
 
         $("#stats_noise_bar_full").css("width", (full_bar / 100) + "%");
         if (adjusted_level < old_value)
@@ -370,7 +351,16 @@ function ($, comm, enums, map_knowledge, messages, options) {
     function update_stats_pane()
     {
         $("#stats_titleline").text(player.name + " " + player.title);
-        $("#stats_wizmode").text(player.wizard ? "*WIZARD*" : "");
+        if (player.wizard)
+            $("#stats_wizmode").text("WIZARD");
+        else if (player.diff == -1)
+			$("#stats_wizmode").text("CASUAL");
+        else if (player.diff == 0)
+            $("#stats_wizmode").text("NORMAL");
+        else if (player.diff == 1)
+            $("#stats_wizmode").text("Casual");
+        else
+            $("#stats_wizmode").text("");
 
         var do_temperature = false;
         var do_contam = false;
@@ -572,6 +562,7 @@ function ($, comm, enums, map_knowledge, messages, options) {
                 hp: 0, hp_max: 0, real_hp_max: 0, poison_survival: 0,
                 mp: 0, mp_max: 0,
                 ac: 0, ev: 0, sh: 0,
+                diff: 0,
                 xl: 0, progress: 0,
                 time: 0, time_delta: 0,
                 gold: 0,
