@@ -1,8 +1,11 @@
-# Yiuf's Home for Lost and Forgotten Species
-## A trunk-based fork of Stone Soup with leftover soup
-### Exterminated races, expired experiments, and extinct species
+# Yiuf's Home MOVED from "crawl" to "yiufcrawl"
+### moved to a new repo https://github.com/yrmvgh/yiufcrawl/
+![bearkin image](http://i.imgur.com/tJNWui6.png)
+![elf image](http://i.imgur.com/6TTWpUu.png)
+![imp image](http://i.imgur.com/AQPqpk5.png)
+### go to https://github.com/yrmvgh/yiufcrawl/ for more info
     download instructions:
-    git clone https://github.com/yrmvgh/crawl.git yiufcrawl
+    git clone https://github.com/yrmvgh/yiufcrawl.git
     cd yiufcrawl/crawl-ref/source
     make TILES=y
     then just run the file named "yiufcrawl"
@@ -11,7 +14,7 @@ alternately "make TILES=y install" will try to install yiufcrawl to your system
 
 for further help, check https://github.com/crawl/crawl/blob/master/crawl-ref/INSTALL.txt
 
-You can clone or checkout the "yiuf" branch if you want to see changes and new content *slightly* faster. "master" gets slightly more testing and is slightly behind "yiuf". For the cutting-edge-dev-branch: `git clone https://github.com/yrmvgh/crawl.git -b yiuf yiufcrawl`
+You can clone or checkout the "yiuf" branch if you want to see changes and new content *slightly* faster. "master" gets slightly more testing and is slightly behind "yiuf". For the cutting-edge-dev-branch: `git clone https://github.com/yrmvgh/yiufcrawl.git -b yiuf`
 
 --------------------------------
 > #### *Yiuf knows how it feels to be unloved. To be forgotten. Yiuf will make some space*
